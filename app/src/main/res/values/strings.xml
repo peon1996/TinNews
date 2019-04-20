@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">Product Search</string>
+    <string name="keyword_invalid">Please enter mandatory field</string>
+    <string name="keyword_hint">Enter Keyword</string>
+    <string name="keyword_text">Keyword</string>
+    <string name="category_text">Category</string>
+    <string name="cdt_text">Condition</string>
+    <string name="cdt_new">New</string>
+    <string name="cdt_used">Used</string>
+    <string name="cdt_unspecified">Unspecified</string>
+    <string name="shipping_text">Shipping Options</string>
+    <string name="shipping_local">Local Pickup</string>
+    <string name="shipping_free">Free Shipping</string>
+    <string name="nearby_text">Enable Nearby Search</string>
+    <string name="search_tag">Search</string>
+    <string name="clear_tag">Clear</string>
+    <string name="miles_hint">Miles from</string>
+    <string name="from_text">From</string>
+    <string name="current_location">Current Location</string>
+    <string name="zip_code">zipcode</string>
+    <string name="search">Search Products..</string>
+    <string name="showing">Showing </string>
+    <string name="results_for"> results for </string>
+    <string name="search_results">Search Results</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_list_display">ListDisplayActivity</string>
+    <string name="no_wishes">No Wishes</string>
+    <string name="title_activity_item_detail">ItemDetailActivity</string>
+    <string name="facebook">facebook</string>
+</resources>
