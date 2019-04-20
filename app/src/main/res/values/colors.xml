@@ -16,4 +16,5 @@
     <color name="white">#FFF</color>
     <color name="cart_color">#807979</color>
     <color name="light_gray">#f5f0f0</color>
+    <color name="line_color">#AFA9A9</color>
 </resources>
