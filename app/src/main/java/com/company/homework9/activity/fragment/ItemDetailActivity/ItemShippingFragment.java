@@ -154,12 +154,65 @@ public class ItemShippingFragment extends BaseFragment {
         } else {
             tCost.setText("$" + shippingCost);
         }
+
         if(globalShipping.equals("")) {
             lGlobal.setVisibility(View.GONE);
         } else {
             lGlobal.setVisibility(View.VISIBLE);
             tGlobal.setText(globalShipping.equals("true") ? "Yes" : "No");
         }
+
+        if(handlingTime.equals("")) {
+            lTime.setVisibility(View.GONE);
+        } else {
+            lTime.setVisibility(View.VISIBLE);
+            if(handlingTime.equals("0") || handlingTime.equals("1")) {
+                tTime.setText(handlingTime + "day");
+            } else {
+                tTime.setText(handlingTime + "days");
+            }
+        }
+
+        if(condition.equals("")) {
+            lCdt.setVisibility(View.GONE);
+        } else {
+            lCdt.setVisibility(View.VISIBLE);
+            tCdt.setText(condition);
+        }
+
+        if(policy.equals("") && returnsWithin.equals("") && refundMode.equals("") && shippedBy.equals("")) {
+            returnPolicy.setVisibility(View.GONE);
+        } else {
+            returnPolicy.setVisibility(View.VISIBLE);
+            if(policy.equals("")) {
+                lPolicy.setVisibility(View.GONE);
+            } else {
+                lPolicy.setVisibility(View.VISIBLE);
+                tPolicy.setText(policy);
+            }
+
+            if(returnsWithin.equals("")) {
+                lWithin.setVisibility(View.GONE);
+            } else {
+                lWithin.setVisibility(View.VISIBLE);
+                tWithin.setText(returnsWithin);
+            }
+
+            if(refundMode.equals("")) {
+                lMode.setVisibility(View.GONE);
+            } else {
+                lMode.setVisibility(View.VISIBLE);
+                tMode.setText(refundMode);
+            }
+
+            if(shippedBy.equals("")) {
+                lBy.setVisibility(View.GONE);
+            } else {
+                lBy.setVisibility(View.VISIBLE);
+                tBy.setText(shippedBy);
+            }
+        }
+
 
 
 
