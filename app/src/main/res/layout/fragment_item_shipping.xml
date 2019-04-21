@@ -156,6 +156,7 @@
                 </LinearLayout>
 
                 <View
+                    android:id="@+id/line1"
                     android:layout_width="380dp"
                     android:layout_gravity="end"
                     android:layout_height="1px"
@@ -288,6 +289,7 @@
                 </LinearLayout>
 
                 <View
+                    android:id="@+id/line2"
                     android:layout_width="380dp"
                     android:layout_gravity="end"
                     android:layout_height="1px"

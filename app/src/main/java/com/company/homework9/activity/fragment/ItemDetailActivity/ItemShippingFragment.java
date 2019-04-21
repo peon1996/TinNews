@@ -1,6 +1,9 @@
 package com.company.homework9.activity.fragment.ItemDetailActivity;
 
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +17,8 @@ import com.company.homework9.activity.fragment.BaseFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.regex.Pattern;
 
 public class ItemShippingFragment extends BaseFragment {
     private String storeName;
@@ -35,6 +40,9 @@ public class ItemShippingFragment extends BaseFragment {
     private LinearLayout soldBy;
     private LinearLayout shippingInfo;
     private LinearLayout returnPolicy;
+
+    private View line1;
+    private View line2;
 
     private TextView tName;
     private LinearLayout lName;
@@ -61,6 +69,13 @@ public class ItemShippingFragment extends BaseFragment {
     private TextView tBy;
     private LinearLayout lBy;
 
+    private LinearLayout has;
+    private TextView no;
+
+    private boolean p1;
+    private boolean p2;
+    private boolean p3;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_item_shipping, container, false);
@@ -78,6 +93,12 @@ public class ItemShippingFragment extends BaseFragment {
         returnsWithin = "";
         refundMode = "";
         shippedBy = "";
+        p1 = false;
+        p2 = false;
+        p3 = false;
+
+        no = v.findViewById(R.id.no_info);
+        has = v.findViewById(R.id.has_info);
 
         soldBy = v.findViewById(R.id.sold_by);
         shippingInfo = v.findViewById(R.id.shipping_info);
@@ -108,6 +129,9 @@ public class ItemShippingFragment extends BaseFragment {
         lBy = v.findViewById(R.id.detail_by);
         tBy = v.findViewById(R.id.by_text);
 
+        line1 = v.findViewById(R.id.line1);
+        line2 = v.findViewById(R.id.line2);
+
 
         String data = getArguments().getString("detail");
 
@@ -118,13 +142,20 @@ public class ItemShippingFragment extends BaseFragment {
         }
         if(storeName.equals("") && storeURL.equals("") && fbScore.equals("") && popularity.equals("") && fbStar.equals("")) {
             soldBy.setVisibility(View.GONE);
+            line1.setVisibility(View.GONE);
+            p1 = false;
         } else {
+            p1 = true;
+            line2.setVisibility(View.VISIBLE);
             soldBy.setVisibility(View.VISIBLE);
             if(storeName.equals("")) {
                 lName.setVisibility(View.GONE);
             } else {
                 lName.setVisibility(View.VISIBLE);
-                tName.setText(storeName);
+                tName.setClickable(true);
+                tName.setMovementMethod(LinkMovementMethod.getInstance());
+                String text = "<a href=" + storeURL + ">" + storeName + "</a>";
+                tName.setText(Html.fromHtml(text));
             }
             if(fbScore.equals("")) {
                 lFb.setVisibility(View.GONE);
@@ -147,43 +178,56 @@ public class ItemShippingFragment extends BaseFragment {
 
         }
 
-        shippingInfo.setVisibility(View.VISIBLE);
-        lCost.setVisibility(View.VISIBLE);
-        if(Float.parseFloat(shippingCost) == 0.0) {
-            tCost.setText("Free Shipping");
+        if(shippingCost.equals("") && globalShipping.equals("") && handlingTime.equals("") && condition.equals("")) {
+            shippingInfo.setVisibility(View.GONE);
+            p2 = false;
         } else {
-            tCost.setText("$" + shippingCost);
-        }
-
-        if(globalShipping.equals("")) {
-            lGlobal.setVisibility(View.GONE);
-        } else {
-            lGlobal.setVisibility(View.VISIBLE);
-            tGlobal.setText(globalShipping.equals("true") ? "Yes" : "No");
-        }
-
-        if(handlingTime.equals("")) {
-            lTime.setVisibility(View.GONE);
-        } else {
-            lTime.setVisibility(View.VISIBLE);
-            if(handlingTime.equals("0") || handlingTime.equals("1")) {
-                tTime.setText(handlingTime + "day");
+            shippingInfo.setVisibility(View.VISIBLE);
+            p2 = true;
+            if(shippingCost.equals("")) {
+                lCost.setVisibility(View.GONE);
             } else {
-                tTime.setText(handlingTime + "days");
-            }
-        }
+                lCost.setVisibility(View.VISIBLE);
+                if(Float.parseFloat(shippingCost) == 0.0) {
+                    tCost.setText("Free Shipping");
+                } else {
+                    tCost.setText("$" + shippingCost);
+                }
+                if(globalShipping.equals("")) {
+                    lGlobal.setVisibility(View.GONE);
+                } else {
+                    lGlobal.setVisibility(View.VISIBLE);
+                    tGlobal.setText(globalShipping.equals("true") ? "Yes" : "No");
+                }
 
-        if(condition.equals("")) {
-            lCdt.setVisibility(View.GONE);
-        } else {
-            lCdt.setVisibility(View.VISIBLE);
-            tCdt.setText(condition);
+                if(handlingTime.equals("")) {
+                    lTime.setVisibility(View.GONE);
+                } else {
+                    lTime.setVisibility(View.VISIBLE);
+                    if(handlingTime.equals("0") || handlingTime.equals("1")) {
+                        tTime.setText(handlingTime + "day");
+                    } else {
+                        tTime.setText(handlingTime + "days");
+                    }
+                }
+
+                if(condition.equals("")) {
+                    lCdt.setVisibility(View.GONE);
+                } else {
+                    lCdt.setVisibility(View.VISIBLE);
+                    tCdt.setText(condition);
+                }
+            }
         }
 
         if(policy.equals("") && returnsWithin.equals("") && refundMode.equals("") && shippedBy.equals("")) {
             returnPolicy.setVisibility(View.GONE);
+            line2.setVisibility(View.GONE);
+            p3 = false;
         } else {
+            p3 = true;
             returnPolicy.setVisibility(View.VISIBLE);
+            line2.setVisibility(View.VISIBLE);
             if(policy.equals("")) {
                 lPolicy.setVisibility(View.GONE);
             } else {
@@ -213,10 +257,23 @@ public class ItemShippingFragment extends BaseFragment {
             }
         }
 
-
+        if(!p1 && !p2 && !p3) {
+            no.setVisibility(View.VISIBLE);
+            has.setVisibility(View.GONE);
+        } else {
+            no.setVisibility(View.GONE);
+            has.setVisibility(View.VISIBLE);
+        }
 
 
         return v;
+    }
+
+    private void setUpLink(TextView view, String url, String content) {
+        Pattern pattern = Pattern.compile(url);
+        Linkify.addLinks(view, pattern, "http://");
+        view.setText(Html.fromHtml("<a href='http://" + url + "'>" + content + "</a>"));
+
     }
 
     private void parseJSON(String data) throws JSONException {
