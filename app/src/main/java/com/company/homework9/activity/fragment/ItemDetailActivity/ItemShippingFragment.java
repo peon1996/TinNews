@@ -1,6 +1,7 @@
 package com.company.homework9.activity.fragment.ItemDetailActivity;
 
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
@@ -8,12 +9,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.company.homework9.Item;
 import com.company.homework9.R;
 import com.company.homework9.activity.fragment.BaseFragment;
+import com.wssholmes.stark.circular_score.CircularScoreView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,9 +51,9 @@ public class ItemShippingFragment extends BaseFragment {
     private LinearLayout lName;
     private TextView tFb;
     private LinearLayout lFb;
-    private TextView tPopular;
+    private CircularScoreView tPopular;
     private LinearLayout lPopular;
-    private TextView tStar;
+    private ImageView tStar;
     private LinearLayout lStar;
     private TextView tCost;
     private LinearLayout lCost;
@@ -167,13 +170,52 @@ public class ItemShippingFragment extends BaseFragment {
                 lPopular.setVisibility(View.GONE);
             } else {
                 lPopular.setVisibility(View.VISIBLE);
-                tPopular.setText(popularity);
+                tPopular.setScore((int)Float.parseFloat(popularity));
             }
             if(fbStar.equals("")) {
                 lStar.setVisibility(View.GONE);
             } else {
                 lStar.setVisibility(View.VISIBLE);
-                tStar.setText(fbStar);
+                if(fbStar.equals("Blue")) {
+                    tStar.setImageResource(R.drawable.normalstar);
+                    tStar.setColorFilter(ContextCompat.getColor(getContext(), R.color.blue), android.graphics.PorterDuff.Mode.SRC_IN);
+                } else if(fbStar.equals("Green")) {
+                    tStar.setImageResource(R.drawable.normalstar);
+                    tStar.setColorFilter(ContextCompat.getColor(getContext(), R.color.green), android.graphics.PorterDuff.Mode.SRC_IN);
+                } else if(fbStar.equals("GreenShooting")) {
+                    tStar.setImageResource(R.drawable.shooting);
+                    tStar.setColorFilter(ContextCompat.getColor(getContext(), R.color.green), android.graphics.PorterDuff.Mode.SRC_IN);
+                } else if(fbStar.equals("Purple")) {
+                    tStar.setImageResource(R.drawable.normalstar);
+                    tStar.setColorFilter(ContextCompat.getColor(getContext(), R.color.purple), android.graphics.PorterDuff.Mode.SRC_IN);
+                } else if(fbStar.equals("PurpleShooting")) {
+                    tStar.setImageResource(R.drawable.shooting);
+                    tStar.setColorFilter(ContextCompat.getColor(getContext(), R.color.purple), android.graphics.PorterDuff.Mode.SRC_IN);
+                } else if(fbStar.equals("Red")) {
+                    tStar.setImageResource(R.drawable.normalstar);
+                    tStar.setColorFilter(ContextCompat.getColor(getContext(), R.color.red), android.graphics.PorterDuff.Mode.SRC_IN);
+                } else if(fbStar.equals("RedShooting")) {
+                    tStar.setImageResource(R.drawable.shooting);
+                    tStar.setColorFilter(ContextCompat.getColor(getContext(), R.color.red), android.graphics.PorterDuff.Mode.SRC_IN);
+                } else if(fbStar.equals("SilverShooting")) {
+                    tStar.setImageResource(R.drawable.shooting);
+                    tStar.setColorFilter(ContextCompat.getColor(getContext(), R.color.silver), android.graphics.PorterDuff.Mode.SRC_IN);
+                } else if(fbStar.equals("Turquoise")) {
+                    tStar.setImageResource(R.drawable.normalstar);
+                    tStar.setColorFilter(ContextCompat.getColor(getContext(), R.color.turquoise), android.graphics.PorterDuff.Mode.SRC_IN);
+                } else if(fbStar.equals("TurquoiseShooting")) {
+                    tStar.setImageResource(R.drawable.shooting);
+                    tStar.setColorFilter(ContextCompat.getColor(getContext(), R.color.turquoise), android.graphics.PorterDuff.Mode.SRC_IN);
+                } else if(fbStar.equals("Yellow")) {
+                    tStar.setImageResource(R.drawable.normalstar);
+                    tStar.setColorFilter(ContextCompat.getColor(getContext(), R.color.yellow), android.graphics.PorterDuff.Mode.SRC_IN);
+                } else if(fbStar.equals("YellowShooting")) {
+                    tStar.setImageResource(R.drawable.shooting);
+                    tStar.setColorFilter(ContextCompat.getColor(getContext(), R.color.yellow), android.graphics.PorterDuff.Mode.SRC_IN);
+                } else if(fbStar.equals("None")) {
+                    tStar.setImageResource(R.drawable.normalstar);
+                    tStar.setColorFilter(ContextCompat.getColor(getContext(), R.color.secondary_purple_color), android.graphics.PorterDuff.Mode.SRC_IN);
+                }
             }
 
         }

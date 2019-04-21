@@ -35,6 +35,7 @@ public class ItemDetailActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private LinearLayout progressBar;
     String jsonData;
+    String title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +49,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         tabs = findViewById(R.id.item_detail_tab);
         viewPager = findViewById(R.id.item_detail_viewpager);
         progressBar = findViewById(R.id.item_detail_loading);
-        String title = (String)this.getIntent().getExtras().getSerializable("title");
+        title = (String)this.getIntent().getExtras().getSerializable("title");
         setTitle(title);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -57,7 +58,6 @@ public class ItemDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 progressBar.setVisibility(View.GONE);
                 viewPager.setVisibility(View.VISIBLE);
-                initDataAfterLoading();
             }
         });
         setUpTabs();
@@ -71,24 +71,42 @@ public class ItemDetailActivity extends AppCompatActivity {
         Thread httpRequest = new Thread(new Runnable() {
             @Override
             public void run() {
-                String url = "http://searchproducts.us-east-2.elasticbeanstalk.com/getDetail?id=";
-                String id = (String)getIntent().getExtras().getSerializable("id");
-                url += id;
-                Log.d("showurl", url);
-                OkHttpClient myClient = new OkHttpClient();
-                Request req = new Request.Builder().get().url(url).build();
-                Response res = null;
-
                 try {
+                    String url = "http://searchproducts.us-east-2.elasticbeanstalk.com/getDetail?id=";
+                    String id = (String)getIntent().getExtras().getSerializable("id");
+                    url += id;
+                    Log.d("showurl", url);
+                    OkHttpClient myClient = new OkHttpClient();
+                    Request req = new Request.Builder().get().url(url).build();
+                    Response res = null;
                     res = myClient.newCall(req).execute();
                     jsonData = res.body().string();
                     Log.d("seedetail", jsonData);
+
+                    url = "http://searchproducts.us-east-2.elasticbeanstalk.com/getSimilar?id=";
+                    url += id;
+                    Request req2 = new Request.Builder().get().url(url).build();
+                    Response res2 = null;
+                    res2 = myClient.newCall(req2).execute();
+                    String similarData = res2.body().string();
+                    Log.d("seesimilar", url);
+
+                    url = "http://searchproducts.us-east-2.elasticbeanstalk.com/getPhoto?id=";
+                    url += title;
+                    Request req3 = new Request.Builder().get().url(url).build();
+                    Response res3 = null;
+                    res3 = myClient.newCall(req3).execute();
+                    String photos = res3.body().string();
+                    Log.d("seephoto", photos);
+
+
+
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             progressBar.setVisibility(View.GONE);
                             viewPager.setVisibility(View.VISIBLE);
-                            initDataAfterLoading();
+                            initDataAfterLoading(jsonData, similarData, photos);
                         }
                     });
 
@@ -109,11 +127,13 @@ public class ItemDetailActivity extends AppCompatActivity {
         return true;
     }
 
-    private void initDataAfterLoading() {
+    private void initDataAfterLoading(String detail, String similar, String photos) {
         Bundle bundle = new Bundle();
         Item item = (Item)this.getIntent().getExtras().getSerializable("item");
         bundle.putSerializable("item", item);
-        bundle.putString("detail", jsonData);
+        bundle.putString("detail", detail);
+        bundle.putString("similar", similar);
+        bundle.putString("photos", photos);
         ItemDetailPagerAdapter adapter = new ItemDetailPagerAdapter(getSupportFragmentManager(), this, bundle);
         viewPager.setAdapter(adapter);
     }

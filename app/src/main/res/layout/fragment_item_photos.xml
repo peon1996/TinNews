@@ -6,12 +6,20 @@
     android:gravity="center_horizontal"
     android:orientation="vertical"
     >
+    <android.support.v7.widget.RecyclerView
+        android:visibility="visible"
+        android:id="@+id/photo_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"/>
+
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="160sp"
-        android:text="this is item photos"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="this is item photos"/>
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:id="@+id/no_photo"
+        android:gravity="center"
+        android:text="No Photos"
+        android:textColor="@color/black"
+        android:textSize="@dimen/six_teen_sp"/>
 </LinearLayout>

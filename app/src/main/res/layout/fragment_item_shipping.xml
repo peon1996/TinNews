@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center_horizontal"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
     <ScrollView
         android:scrollbars="none"
         android:layout_width="match_parent"
@@ -114,20 +114,22 @@
                         android:paddingStart="40dp"
                         android:layout_marginBottom="@dimen/twelve_dp">
                         <TextView
+                            android:paddingTop="@dimen/six_dp"
                             android:layout_width="120dp"
                             android:layout_height="wrap_content"
                             android:text="Popularity"
                             android:textColor="@color/black"
                             android:textSize="@dimen/six_teen_sp"/>
-                        <TextView
+                        <com.wssholmes.stark.circular_score.CircularScoreView
+                            android:layout_marginStart="@dimen/eight_dp"
                             android:id="@+id/popular_text"
-                            android:layout_marginStart="@dimen/ten_dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/cart_color"
-                            android:textSize="@dimen/six_teen_sp"
-                            android:text="abcsdfff"
-                            android:paddingEnd="@dimen/eight_dp"/>
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            app:score="50"
+                            app:setPrimaryColor="@color/invalid_red"
+                            app:setSecondaryColor="@color/white"
+                            app:setBackgroundColor="@color/white"
+                            app:setTextColor="@color/black"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -138,20 +140,17 @@
                         android:paddingStart="40dp"
                         android:layout_marginBottom="@dimen/twelve_dp">
                         <TextView
+                            android:paddingTop="@dimen/four_dp"
                             android:layout_width="120dp"
                             android:layout_height="wrap_content"
                             android:text="Feedback Star"
                             android:textColor="@color/black"
                             android:textSize="@dimen/six_teen_sp"/>
-                        <TextView
+                        <ImageView
                             android:id="@+id/star_text"
                             android:layout_marginStart="@dimen/ten_dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/cart_color"
-                            android:textSize="@dimen/six_teen_sp"
-                            android:text="abcsdfff"
-                            android:paddingEnd="@dimen/eight_dp"/>
+                            android:layout_width="30dp"
+                            android:layout_height="30dp" />
                     </LinearLayout>
                 </LinearLayout>
 

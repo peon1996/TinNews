@@ -17,4 +17,11 @@
     <color name="cart_color">#807979</color>
     <color name="light_gray">#f5f0f0</color>
     <color name="line_color">#AFA9A9</color>
+    <color name="blue">#0000FF</color>
+    <color name="green">#008000</color>
+    <color name="purple">#800080</color>
+    <color name="red">#FF0000</color>
+    <color name="silver">#C0C0C0</color>
+    <color name="yellow_star">#FFFF00</color>
+    <color name="turquoise">#40e0d0</color>
 </resources>
