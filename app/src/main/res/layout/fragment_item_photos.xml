@@ -5,13 +5,15 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
+    android:background="@color/light_gray"
     >
     <android.support.v7.widget.RecyclerView
         android:visibility="visible"
+        android:layout_gravity="center_horizontal"
         android:id="@+id/photo_recycler"
-        android:layout_width="match_parent"
+        android:layout_width="400dp"
         android:layout_height="match_parent"
-        android:scrollbars="vertical"/>
+        android:scrollbars="none" />
 
     <TextView
         android:layout_width="match_parent"

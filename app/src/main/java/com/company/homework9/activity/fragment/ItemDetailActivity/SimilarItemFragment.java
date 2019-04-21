@@ -13,9 +13,7 @@ public class SimilarItemFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_similar_items, container, false);
-        TextView t = v.findViewById(R.id.similartest);
         String data = getArguments().getString("similar");
-        t.setText(data);
         return v;
     }
 

@@ -6,9 +6,41 @@
     android:gravity="center_horizontal"
     android:orientation="vertical"
     >
+
+    <LinearLayout
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/ten_dp">
+
+        <Spinner
+            android:id="@+id/spinner_price"
+            android:layout_width="190dp"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown" />
+
+        <Spinner
+            android:id="@+id/spinner_order"
+            android:layout_width="190dp"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown" />
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:id="@+id/similar_recycler" />
+
     <TextView
-        android:id="@+id/similartest"
+        android:id="@+id/no_similar"
+        android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="160sp"
-        android:text="this is similar items"/>
+        android:layout_height="match_parent"
+        android:text="No results"
+        android:textColor="@color/black"
+        android:textSize="@dimen/six_teen_sp"
+        android:visibility="gone"/>
 </LinearLayout>
