@@ -6,12 +6,32 @@
     android:gravity="center_horizontal"
     android:orientation="vertical"
     >
-    <TextView
+    <ScrollView
+        android:scrollbars="none"
         android:layout_width="match_parent"
-        android:layout_height="160sp"
-        android:text="this is item shipping"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="this is item shipping"/>
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/no_info"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="No information"
+                android:textSize="@dimen/six_teen_sp"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:paddingTop="300dp"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:id="@+id/has_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

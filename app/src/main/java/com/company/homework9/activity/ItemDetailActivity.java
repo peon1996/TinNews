@@ -74,6 +74,7 @@ public class ItemDetailActivity extends AppCompatActivity {
                 String url = "http://searchproducts.us-east-2.elasticbeanstalk.com/getDetail?id=";
                 String id = (String)getIntent().getExtras().getSerializable("id");
                 url += id;
+                Log.d("showurl", url);
                 OkHttpClient myClient = new OkHttpClient();
                 Request req = new Request.Builder().get().url(url).build();
                 Response res = null;
