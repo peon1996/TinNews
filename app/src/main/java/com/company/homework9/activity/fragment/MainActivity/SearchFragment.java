@@ -2,10 +2,17 @@ package com.company.homework9.activity.fragment.MainActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v7.widget.AppCompatAutoCompleteTextView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -17,8 +24,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.company.homework9.AutoCompleteAdapter;
 import com.company.homework9.Item;
 import com.company.homework9.R;
+import com.company.homework9.ZipCodeCall;
 import com.company.homework9.activity.ListDisplayActivity;
 import com.company.homework9.activity.fragment.BaseFragment;
 
@@ -31,11 +42,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class SearchFragment extends BaseFragment {
+    private static final int TRIGGER_AUTO_COMPLETE = 100;
+    private static final long AUTO_COMPLETE_DELAY = 300;
+    private Handler handler;
+    private AutoCompleteAdapter autoCompleteAdapter;
     public final static String[] OPTIONS = {"All", "Art", "Baby", "Books", "Clothing, Shoes & Accessories",
     "Computers, Tablets & Networking", "Health & Beauty", "Music", "Video Games & Consoles"};
     private EditText keywordInput;
@@ -55,7 +67,7 @@ public class SearchFragment extends BaseFragment {
     private RadioGroup radioGroup;
     private RadioButton userZipCodeRadio;
     private EditText milesInput;
-    private EditText userInputZipCode;
+    private AppCompatAutoCompleteTextView userInputZipCode;
 
     private Button searchButton;
     private Button clearButton;
@@ -97,9 +109,10 @@ public class SearchFragment extends BaseFragment {
             optionalPart.setVisibility(View.VISIBLE);
         }
 
+        autoCompleteAdapter = new AutoCompleteAdapter(getActivity(),
+                android.R.layout.simple_dropdown_item_1line);
         radioGroup = v.findViewById(R.id.radio_group);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
-
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 View radioButton = radioGroup.findViewById(checkedId);
@@ -127,7 +140,8 @@ public class SearchFragment extends BaseFragment {
         });
 
         milesInput = v.findViewById(R.id.miles_input);
-        userInputZipCode = v.findViewById(R.id.user_input_zip_code);
+        userInputZipCode = v.findViewById(R.id.auto_complete_edit_text);
+        userInputZipCode.setEnabled(false);
         userZipCodeRadio = v.findViewById(R.id.from_user_input);
 
         searchButton = v.findViewById(R.id.search_btn);
@@ -181,6 +195,50 @@ public class SearchFragment extends BaseFragment {
                 }
             }
         });
+
+        userInputZipCode.setThreshold(2);
+        userInputZipCode.setAdapter(autoCompleteAdapter);
+        userInputZipCode.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view,
+                                            int position, long id) {
+                    }
+                });
+
+        userInputZipCode.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int
+                    count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+                handler.removeMessages(TRIGGER_AUTO_COMPLETE);
+                handler.sendEmptyMessageDelayed(TRIGGER_AUTO_COMPLETE,
+                        AUTO_COMPLETE_DELAY);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        handler = new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                if (msg.what == TRIGGER_AUTO_COMPLETE) {
+                    if (!TextUtils.isEmpty(userInputZipCode.getText())) {
+                        makeApiCall(userInputZipCode.getText().toString());
+                    }
+                }
+                return false;
+            }
+        });
+
         return v;
     }
     private String getTargetUrl() {
@@ -230,133 +288,35 @@ public class SearchFragment extends BaseFragment {
         return targetUrl;
     }
 
-    private void sendHttpRequest() {
-        Thread httpRequest = new Thread(new Runnable() {
+    private void makeApiCall(String text) {
+        ZipCodeCall.make(getActivity(), text, new Response.Listener<String>() {
             @Override
-            public void run() {
-                OkHttpClient myClient = new OkHttpClient();
-                String keyword = keywordInput.getText().toString();
-                String categorySelected = category.getSelectedItem().toString();
-                String categoryId = "default";
+            public void onResponse(String response) {
 
-                if(categorySelected.equals("Art")) {
-                    categoryId = "550";
-                } else if(categorySelected.equals("Baby")) {
-                    categoryId = "2984";
-                } else if(categorySelected.equals("Books")) {
-                    categoryId = "267";
-                } else if(categorySelected.equals("Clothing, Shoes & Accessories")) {
-                    categoryId = "11450";
-                } else if(categorySelected.equals("Computers, Tablets & Networking")) {
-                    categoryId = "58058";
-                } else if(categorySelected.equals("Health & Beauty")) {
-                    categoryId = "26395";
-                } else if(categorySelected.equals("Music")) {
-                    categoryId = "11233";
-                } else if(categorySelected.equals("Video Games & Consoles")) {
-                    categoryId = "2984";
-                }
-                boolean ifNew = isNew.isChecked();
-                boolean ifUsed = isUsed.isChecked();
-                boolean ifUnspecified = isUnspecified.isChecked();
-                boolean ifLocal = isLocalPickUp.isChecked();
-                boolean ifFree = isFreeShipping.isChecked();
-                String distance = milesInput.getText().toString();
-                if(distance.equals("")) {
-                    distance = "10";
-                }
-                String zip = "90007";
-                if(!userInputZipCode.getText().toString().equals("")) {
-                    zip = userInputZipCode.getText().toString();
-                }
-                String targetUrl = "http://searchproducts.us-east-2.elasticbeanstalk.com/search?";
-                targetUrl = targetUrl + "distance=" + distance + "&isFreeShipping=" + ifFree;
-                targetUrl += "&isLocalPickUp=" + ifLocal;
-                targetUrl += "&isUnspecified=" + ifUnspecified;
-                targetUrl += "&isUsed=" + ifUsed;
-                targetUrl += "&isNew=" + ifNew;
-                targetUrl += "&category=" + categoryId;
-                targetUrl += "&keyword=" + keyword;
-                targetUrl += "&zipcode=" + zip;
-                Log.d("url", targetUrl);
-                Request req = new Request.Builder().get().url(targetUrl).build();
-                Response res = null;
-                String data;
-
+                List<String> stringList = new ArrayList<>();
                 try {
-                    res = myClient.newCall(req).execute();
-                    data = res.body().string();
-                    List<Item> list = parseResponse(data);
-//                    String test = "";
-//                    for(int i = 0; i < list.size(); i++) {
-//                        Item cur = list.get(i);
-//                        String str = "";
-//                        str += cur.getCondition() + " " + cur.getImageUrl() + " " + cur.getShippingCost()
-//                                + " " + cur.getTitle() + " " + cur.getZipCode() + "/n";
-//                        test += str;
-//                    }
-//                    Log.d("list check", test);
-
-                }catch (IOException e) {
-                    Log.e("httpIOException", e.toString());
-                }catch (JSONException e) {
-                    Log.e("JSONException", e.toString());
+                    JSONObject responseObject = new JSONObject(response);
+                    JSONArray array = responseObject.getJSONArray("postalCodes");
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject row = array.getJSONObject(i);
+                        stringList.add(row.getString("postalCode"));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+
+                autoCompleteAdapter.setData(stringList);
+                autoCompleteAdapter.notifyDataSetChanged();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
             }
         });
-        httpRequest.start();
     }
 
-    private List<Item> parseResponse(String response) throws JSONException {
-        JSONObject responseJSON = new JSONObject(response);
-        List<Item> result = new ArrayList<>();
-        JSONArray itemList = responseJSON.getJSONArray("findItemsAdvancedResponse")
-                .getJSONObject(0).getJSONArray("searchResult").getJSONObject(0).
-                getJSONArray("item");
-        for(int i = 0; i < itemList.length(); i++) {
-            JSONObject current = itemList.getJSONObject(i);
-            String imageUrl;
-            if(current.has("galleryURL")) {
-                imageUrl = current.getJSONArray("galleryURL").get(0).toString();
-            } else {
-                imageUrl = "";
-            }
-            String title;
-            if(current.has("title")) {
-                title = current.getJSONArray("title").get(0).toString();
-            } else {
-                title = "N/A";
-            }
-            String zipCode;
-            if(current.has("postalCode")) {
-                zipCode = current.getJSONArray("postalCode").get(0).toString();
-            } else {
-                zipCode = "N/A";
-            }
-            String shippingCost;
-            shippingCost = current.getJSONArray("shippingInfo").getJSONObject(0).
-                    getJSONArray("shippingServiceCost").getJSONObject(0).getString("__value__");
-            String condition;
-            if(current.has("condition")) {
-                if(current.getJSONArray("condition").getJSONObject(0).has("conditionDisplayName")) {
-                    condition = current.getJSONArray("condition").getJSONObject(0).getJSONArray("conditionDisplayName").get(0).toString();
-                } else {
-                    condition = "N/A";
-                }
-            } else {
-                condition = "N/A";
-            }
-            String see;
-            if(current.has("viewItemURL")) {
-                see = current.getJSONArray("viewItemURL").get(0).toString();
-            } else {
-                see = "N/A";
-            }
-            Item item = new Item(imageUrl, title, zipCode, shippingCost, condition, shippingCost, condition, see);
-            result.add(item);
-        }
-        return result;
-    }
+
 
     @Override
     public void onStart() {

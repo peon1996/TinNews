@@ -189,17 +189,25 @@
                         android:text="@string/current_location"
                         android:textColor="@color/black"
                         android:textSize="@dimen/six_teen_sp"/>
-                    <android.support.design.widget.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                        <EditText
-                            android:id="@+id/user_input_zip_code"
-                            
-                            android:layout_width="@dimen/one_hundred_thirty"
-                            android:layout_height="wrap_content"
-                            android:inputType="text"
-                            android:enabled="false"/>
-                    </android.support.design.widget.TextInputLayout>
+                    <!--<android.support.design.widget.TextInputLayout-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content">-->
+                        <!--<EditText-->
+                            <!--android:id="@+id/user_input_zip_code"-->
+                            <!---->
+                            <!--android:layout_width="@dimen/one_hundred_thirty"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:inputType="text"-->
+                            <!--android:enabled="false"/>-->
+                    <!--</android.support.design.widget.TextInputLayout>-->
+
+                    <android.support.v7.widget.AppCompatAutoCompleteTextView
+                        android:id="@+id/auto_complete_edit_text"
+                        android:layout_width="160dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:inputType="text"
+                        android:maxLines="1"/>
                 </LinearLayout>
             </LinearLayout>
 
