@@ -10,6 +10,7 @@ public class Item implements Serializable {
     private String condition;
     private String cost;
     private String id;
+    private String see;
 
     public String getImageUrl() {
         return imageUrl;
@@ -39,7 +40,11 @@ public class Item implements Serializable {
         return id;
     }
 
-    public Item(String imageUrl, String title, String zipCode, String shippingCost, String condition, String cost, String id) {
+    public String getSee() {
+        return see;
+    }
+
+    public Item(String imageUrl, String title, String zipCode, String shippingCost, String condition, String cost, String id, String see) {
         this.imageUrl = imageUrl;
         this.title = title;
         this.zipCode = zipCode;
@@ -47,5 +52,6 @@ public class Item implements Serializable {
         this.condition = condition;
         this.cost = cost;
         this.id = id;
+        this.see = see;
     }
 }

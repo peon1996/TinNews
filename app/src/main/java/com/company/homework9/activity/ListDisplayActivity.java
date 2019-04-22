@@ -167,7 +167,13 @@ public class ListDisplayActivity extends AppCompatActivity implements ListDispla
             }
             String id;
             id = current.getJSONArray("itemId").get(0).toString();
-            Item item = new Item(imageUrl, title, zipCode, shippingCost, condition, cost, id);
+            String see;
+            if(current.has("viewItemURL")) {
+                see = current.getJSONArray("viewItemURL").get(0).toString();
+            } else {
+                see = "N/A";
+            }
+            Item item = new Item(imageUrl, title, zipCode, shippingCost, condition, cost, id, see);
             result.add(item);
         }
         return result;

@@ -278,7 +278,7 @@ public class SearchFragment extends BaseFragment {
                 targetUrl += "&category=" + categoryId;
                 targetUrl += "&keyword=" + keyword;
                 targetUrl += "&zipcode=" + zip;
-                Log.e("url", targetUrl);
+                Log.d("url", targetUrl);
                 Request req = new Request.Builder().get().url(targetUrl).build();
                 Response res = null;
                 String data;
@@ -346,7 +346,13 @@ public class SearchFragment extends BaseFragment {
             } else {
                 condition = "N/A";
             }
-            Item item = new Item(imageUrl, title, zipCode, shippingCost, condition, shippingCost, condition);
+            String see;
+            if(current.has("viewItemURL")) {
+                see = current.getJSONArray("viewItemURL").get(0).toString();
+            } else {
+                see = "N/A";
+            }
+            Item item = new Item(imageUrl, title, zipCode, shippingCost, condition, shippingCost, condition, see);
             result.add(item);
         }
         return result;

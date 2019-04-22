@@ -5,6 +5,8 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
+    android:background="@color/light_gray"
+    android:paddingTop="@dimen/six_dp"
     >
 
     <LinearLayout

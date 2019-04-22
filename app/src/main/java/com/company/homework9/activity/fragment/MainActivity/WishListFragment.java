@@ -1,5 +1,6 @@
 package com.company.homework9.activity.fragment.MainActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +13,8 @@ import android.widget.Toast;
 
 import com.company.homework9.Item;
 import com.company.homework9.R;
+import com.company.homework9.activity.ItemDetailActivity;
+import com.company.homework9.activity.ListDisplayActivity;
 import com.company.homework9.activity.adapter.WishListAdapter;
 import com.company.homework9.activity.fragment.BaseFragment;
 
@@ -70,6 +73,10 @@ public class WishListFragment extends BaseFragment implements WishListAdapter.It
 
     @Override
     public void onItemClick(View v, int position, String id, String title, Item item) {
-        Log.d("click test", "it clicked");
+        Intent intent = new Intent(getContext(), ItemDetailActivity.class);
+        intent.putExtra("id", id);
+        intent.putExtra("title", title);
+        intent.putExtra("item", item);
+        startActivity(intent);
     }
 }

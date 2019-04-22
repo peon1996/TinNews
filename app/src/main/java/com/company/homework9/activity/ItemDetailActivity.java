@@ -1,7 +1,9 @@
 package com.company.homework9.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -14,14 +16,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.company.homework9.Item;
 import com.company.homework9.R;
+import com.company.homework9.activity.adapter.DetailPhotoAdapter;
 import com.company.homework9.activity.adapter.ItemDetailPagerAdapter;
+import com.company.homework9.activity.fragment.MainActivity.WishListFragment;
 
 
 import java.io.IOException;
@@ -30,7 +36,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class ItemDetailActivity extends AppCompatActivity {
+public class ItemDetailActivity extends AppCompatActivity{
     private TabLayout tabs;
     private ViewPager viewPager;
     private LinearLayout progressBar;
@@ -50,21 +56,71 @@ public class ItemDetailActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.item_detail_viewpager);
         progressBar = findViewById(R.id.item_detail_loading);
         title = (String)this.getIntent().getExtras().getSerializable("title");
+        Item current = (Item)this.getIntent().getExtras().getSerializable("item");
         setTitle(title);
 
+        String toastName;
+        if(title.length() >= 60) {
+            toastName = title.substring(0, 60) + "...";
+        } else {
+            toastName = title;
+        }
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
+        if(!WishListFragment.wishListMap.containsKey(current.getId())) {
+            fab.setImageResource(R.drawable.cart_plus);
+        } else {
+            fab.setImageResource(R.drawable.cart_remove);
+        }
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                progressBar.setVisibility(View.GONE);
-                viewPager.setVisibility(View.VISIBLE);
+                if(WishListFragment.wishListMap.containsKey(current.getId())) {
+                    WishListFragment.wishListMap.remove(current.getId());
+                    fab.setImageResource(R.drawable.cart_plus);
+                    Toast.makeText(getApplicationContext(), toastName + " was removed from wish list",Toast.LENGTH_SHORT).show();
+                    MainActivity.getViewPager().getAdapter().notifyDataSetChanged();
+                } else {
+                    WishListFragment.wishListMap.put(current.getId(), current);
+                    fab.setImageResource(R.drawable.cart_remove);
+                    Toast.makeText(getApplicationContext(), toastName +" was added to wish list",Toast.LENGTH_SHORT).show();
+                    MainActivity.getViewPager().getAdapter().notifyDataSetChanged();
+                }
             }
         });
         setUpTabs();
 
+
         sendHttpRequest();
 
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            case R.id.facebook:
+                String targetUrl = "https://www.facebook.com/dialog/share?app_id=1134804663373816&display=popup&href=";
+                Item current = (Item)this.getIntent().getExtras().getSerializable("item");
+                String title = current.getTitle();
+                String see = current.getSee();
+                String cost = current.getCost();
+                String quote = "Buy " + title + " at " +  cost +  " from LINK below";
+                targetUrl += see;
+                targetUrl += "&redirect_uri=";
+                targetUrl += see;
+                targetUrl += "&quote=";
+                targetUrl += quote;
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(targetUrl));
+                startActivity(i);
+                return true;
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void sendHttpRequest() {
