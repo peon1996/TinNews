@@ -11,42 +11,30 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
 import com.company.homework9.R;
 import com.company.homework9.activity.fragment.MainActivity.MainViewPagerAdapter;
 
-public class MainActivity extends AppCompatActivity implements LocationListener{
-    public static double Lat = 0;
-    public static double Lng = 0;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.List;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+public class MainActivity extends AppCompatActivity{
+    public static String localZipCode = "";
     private static ViewPager viewPager;
     private TabLayout mTab;
 
     protected LocationManager locationManager;
     public static final int PERMISSIONS_REQUEST_READ_CONTACTS = 1;
-
-    @Override
-    public void onLocationChanged(final Location location) {
-        //your code here
-        Lat = location.getLatitude();
-        Lng = location.getLongitude();
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,46 +44,39 @@ public class MainActivity extends AppCompatActivity implements LocationListener{
         initData();
         getSupportActionBar().setElevation(0);
 
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_READ_CONTACTS);
-        System.out.println(Lat + " " + Lng);
-        Toast.makeText(getApplicationContext(),Lat + " " + Lng,Toast.LENGTH_SHORT).show();
+        sendHttpRequest();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_READ_CONTACTS: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
-                        return;
-                    }
-                    locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 0, 0, this);// permission was granted, yay! Do th
-                    // contacts-related task you need to do.
-
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
+    private void sendHttpRequest() {
+        Thread httpRequest = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String url = "http://ip-api.com/json";
+                OkHttpClient myClient = new OkHttpClient();
+                Request req = new Request.Builder().get().url(url).build();
+                Response res = null;
+                String data;
+                try {
+                    res = myClient.newCall(req).execute();
+                    data = res.body().string();
+                    parseJSON(data);
+                }catch (IOException e) {
+                    Log.e("httpIOException", e.toString());
+                }catch (JSONException e) {
+                    Log.e("JSONException", e.toString());
                 }
-                return;
             }
+        });
+        httpRequest.start();
+    }
 
-            // other 'case' lines to check for other
-            // permissions this app might request
+    private void parseJSON(String data) throws JSONException{
+        JSONObject js = new JSONObject(data);
+        if(js.has("zip")) {
+            localZipCode = js.getString("zip");
         }
     }
+
     private void initData() {
         MainViewPagerAdapter adapter = new MainViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);

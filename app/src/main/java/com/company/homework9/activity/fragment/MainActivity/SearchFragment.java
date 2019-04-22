@@ -31,6 +31,7 @@ import com.company.homework9.Item;
 import com.company.homework9.R;
 import com.company.homework9.ZipCodeCall;
 import com.company.homework9.activity.ListDisplayActivity;
+import com.company.homework9.activity.MainActivity;
 import com.company.homework9.activity.fragment.BaseFragment;
 
 import org.json.JSONArray;
@@ -272,9 +273,11 @@ public class SearchFragment extends BaseFragment {
         if(distance.equals("")) {
             distance = "10";
         }
-        String zip = "90007";
+        String zip;
         if(!userInputZipCode.getText().toString().equals("")) {
             zip = userInputZipCode.getText().toString();
+        } else {
+            zip = MainActivity.localZipCode;
         }
         String targetUrl = "http://searchproducts.us-east-2.elasticbeanstalk.com/search?";
         targetUrl = targetUrl + "distance=" + distance + "&isFreeShipping=" + ifFree;
