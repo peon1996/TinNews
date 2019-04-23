@@ -110,6 +110,7 @@ public class ItemDetailActivity extends AppCompatActivity{
                 String cost = current.getCost();
                 String quote = "Buy " + title + " at " +  cost +  " from LINK below";
                 targetUrl += see;
+                targetUrl += "&hashtag=%23CSCI571Spring2019Ebay";
                 targetUrl += "&redirect_uri=";
                 targetUrl += see;
                 targetUrl += "&quote=";

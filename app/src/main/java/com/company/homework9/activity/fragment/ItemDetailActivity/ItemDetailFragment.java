@@ -29,6 +29,7 @@ public class ItemDetailFragment extends BaseFragment {
     private String price;
     private String shipping;
     private String brand;
+    private String subtitle;
     private List<String> specs;
 
     private LinearLayout gallery;
@@ -48,6 +49,7 @@ public class ItemDetailFragment extends BaseFragment {
         pics = new ArrayList<>();
         specs = new ArrayList<>();
         brand = "";
+        subtitle = "";
         View v = inflater.inflate(R.layout.fragment_item_detail, container, false);
 
         gallery = v.findViewById(R.id.image_gallery);
@@ -90,6 +92,12 @@ public class ItemDetailFragment extends BaseFragment {
         lBrand = v.findViewById(R.id.detail_brand);
         tBrand = v.findViewById(R.id.brand_text);
 
+        if(subtitle.equals("")) {
+            lSubtitle.setVisibility(View.GONE);
+        } else {
+            lSubtitle.setVisibility(View.VISIBLE);
+            tSubtitle.setText(subtitle);
+        }
         tPrice.setText("$" + price);
         if(brand.equals("")) {
             lBrand.setVisibility(View.GONE);
@@ -119,6 +127,8 @@ public class ItemDetailFragment extends BaseFragment {
         for(int i = 0; i < pictures.length(); i++) {
             pics.add(pictures.get(i).toString());
         }
+        subtitle = current.getString("Subtitle");
+
         JSONArray array = null;
         if(current.has("ItemSpecifics")) {
             array = current.getJSONObject("ItemSpecifics").getJSONArray("NameValueList");
