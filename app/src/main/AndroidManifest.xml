@@ -9,21 +9,25 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcherv2"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcherv2"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.MainActivity">
-            <meta-data
-                android:name="com.google.android.geo.API_KEY"
-                android:value="AIzaSyCaVHSWA2FTNKYLOecEY05UcAz9yo1krzA" />
-
+        <activity
+            android:name=".activity.splash"
+            android:label="Product Search"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".activity.MainActivity">
+            <meta-data
+                android:name="com.google.android.geo.API_KEY"
+                android:value="AIzaSyCaVHSWA2FTNKYLOecEY05UcAz9yo1krzA" />
         </activity>
         <activity
             android:name=".activity.ListDisplayActivity"
@@ -32,7 +36,7 @@
         <activity
             android:name=".activity.ItemDetailActivity"
             android:label="@string/title_activity_item_detail"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

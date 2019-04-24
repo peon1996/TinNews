@@ -27,4 +27,5 @@
     <string name="no_wishes">No Wishes</string>
     <string name="title_activity_item_detail">ItemDetailActivity</string>
     <string name="facebook">facebook</string>
+    <string name="title_activity_splash">splash</string>
 </resources>
