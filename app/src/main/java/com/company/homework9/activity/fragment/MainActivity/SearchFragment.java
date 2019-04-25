@@ -50,7 +50,7 @@ public class SearchFragment extends BaseFragment {
     private Handler handler;
     private AutoCompleteAdapter autoCompleteAdapter;
     public final static String[] OPTIONS = {"All", "Art", "Baby", "Books", "Clothing, Shoes & Accessories",
-    "Computers, Tablets & Networking", "Health & Beauty", "Music", "Video Games & Consoles"};
+            "Computers, Tablets & Networking", "Health & Beauty", "Music", "Video Games & Consoles"};
     private EditText keywordInput;
     private TextView keywordValidation;
     private TextView zipCodeValidation;
@@ -72,6 +72,7 @@ public class SearchFragment extends BaseFragment {
 
     private Button searchButton;
     private Button clearButton;
+    private boolean show;
 
     @Override
     protected View initView() {
@@ -84,9 +85,17 @@ public class SearchFragment extends BaseFragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        show = false;
+    }
+
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_search, container, false);
         keywordInput = v.findViewById(R.id.KeywordInput);
+        keywordInput.setHint("Enter Keyword");
 
         keywordValidation = v.findViewById(R.id.keyword_invalid);
         zipCodeValidation = v.findViewById(R.id.zip_code_invalid);
@@ -104,10 +113,17 @@ public class SearchFragment extends BaseFragment {
 
         enableNearBySearch = v.findViewById(R.id.enable_nearby_box);
         optionalPart = v.findViewById(R.id.optional_content);
+
         if(!enableNearBySearch.isChecked()) {
             optionalPart.setVisibility(View.GONE);
         } else {
             optionalPart.setVisibility(View.VISIBLE);
+        }
+
+        if(show) {
+            optionalPart.setVisibility(View.VISIBLE);
+        } else {
+            optionalPart.setVisibility(View.GONE);
         }
 
         autoCompleteAdapter = new AutoCompleteAdapter(getActivity(),
@@ -134,13 +150,16 @@ public class SearchFragment extends BaseFragment {
             public void onClick(View v) {
                 if(enableNearBySearch.isChecked()) {
                     optionalPart.setVisibility(View.VISIBLE);
+                    show = true;
                 } else {
                     optionalPart.setVisibility(View.GONE);
+                    show = false;
                 }
             }
         });
 
         milesInput = v.findViewById(R.id.miles_input);
+        milesInput.setHint("Miles from");
         userInputZipCode = v.findViewById(R.id.auto_complete_edit_text);
         userInputZipCode.setEnabled(false);
         userZipCodeRadio = v.findViewById(R.id.from_user_input);
@@ -165,6 +184,7 @@ public class SearchFragment extends BaseFragment {
                 userInputZipCode.setText("");
                 enableNearBySearch.setChecked(false);
                 optionalPart.setVisibility(View.GONE);
+                show = false;
             }
         });
         searchButton.setOnClickListener(new View.OnClickListener() {
@@ -199,6 +219,7 @@ public class SearchFragment extends BaseFragment {
 
         userInputZipCode.setThreshold(2);
         userInputZipCode.setAdapter(autoCompleteAdapter);
+        userInputZipCode.setHint("zipcode");
         userInputZipCode.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
                     @Override
@@ -242,6 +263,7 @@ public class SearchFragment extends BaseFragment {
 
         return v;
     }
+
     private String getTargetUrl() {
         String keyword = keywordInput.getText().toString();
         String categorySelected = category.getSelectedItem().toString();
@@ -270,9 +292,14 @@ public class SearchFragment extends BaseFragment {
         boolean ifLocal = isLocalPickUp.isChecked();
         boolean ifFree = isFreeShipping.isChecked();
         String distance = milesInput.getText().toString();
-        if(distance.equals("")) {
-            distance = "10";
+        if(enableNearBySearch.isChecked()) {
+            if(distance.equals("")) {
+                distance = "10";
+            }
+        } else {
+            distance = "wrong";
         }
+
         String zip;
         if(!userInputZipCode.getText().toString().equals("")) {
             zip = userInputZipCode.getText().toString();
