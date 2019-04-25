@@ -9,6 +9,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -86,10 +89,14 @@ public class ListDisplayAdapter extends RecyclerView.Adapter<ListDisplayAdapter.
             holder.wish_list.setImageResource(R.drawable.cart_plus);
             holder.wish_list.setColorFilter(ContextCompat.getColor(mContext, R.color.cart_color), android.graphics.PorterDuff.Mode.SRC_IN);
         }
+        Animation ani = new AlphaAnimation(1, 0);
+        ani.setDuration(200);
+        ani.setInterpolator(new LinearInterpolator());
 
         holder.wish_list.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+                holder.self.startAnimation(ani);
                 if(WishListFragment.wishListMap.containsKey(current.getId())) {
                     WishListFragment.wishListMap.remove(current.getId());
                     holder.wish_list.setImageResource(R.drawable.cart_plus);
@@ -123,6 +130,7 @@ public class ListDisplayAdapter extends RecyclerView.Adapter<ListDisplayAdapter.
     }
 
     public class CardViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        View self;
         ImageView item_image;
         TextView item_title;
         TextView item_zip;
@@ -136,6 +144,7 @@ public class ListDisplayAdapter extends RecyclerView.Adapter<ListDisplayAdapter.
 
         CardViewHolder(View v) {
             super(v);
+            self = v;
             item_image = v.findViewById(R.id.item_image);
             item_title = v.findViewById(R.id.item_title);
             item_zip = v.findViewById(R.id.item_zip_code);
