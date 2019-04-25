@@ -28,6 +28,15 @@
             android:layout_gravity="center"/>
     </LinearLayout>
 
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/search_no_result"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="No results"
+        android:gravity="center"
+        android:textSize="@dimen/six_teen_sp"/>]
+
     <LinearLayout
         android:id="@+id/show_list"
         android:layout_width="match_parent"

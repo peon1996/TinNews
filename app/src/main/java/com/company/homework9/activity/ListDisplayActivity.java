@@ -42,6 +42,7 @@ public class ListDisplayActivity extends AppCompatActivity implements ListDispla
     private TextView inputKeyword;
     private RecyclerView mRecyclerView;
     private ListDisplayAdapter adapter;
+    private TextView noResult;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +50,7 @@ public class ListDisplayActivity extends AppCompatActivity implements ListDispla
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        noResult = findViewById(R.id.search_no_result);
         progressBar = findViewById(R.id.loading);
         showList = findViewById(R.id.show_list);
         progressBar.setVisibility(View.VISIBLE);
@@ -57,6 +59,7 @@ public class ListDisplayActivity extends AppCompatActivity implements ListDispla
 
         keyword = (String)getIntent().getExtras().getSerializable("keyword");
         url = (String)getIntent().getExtras().getSerializable("url");
+        Log.d("requesturl", url);
         sendHttpRequest();
     }
 
@@ -112,69 +115,81 @@ public class ListDisplayActivity extends AppCompatActivity implements ListDispla
 
     private void loadResults(List list) {
         progressBar.setVisibility(View.GONE);
-        showList.setVisibility(View.VISIBLE);
-        listNumber.setText(list.size() + "");
-        inputKeyword.setText(keyword);
+        if(list.size() == 0) {
+            noResult.setVisibility(View.VISIBLE);
+            showList.setVisibility(View.GONE);
+        } else {
+            noResult.setVisibility(View.GONE);
+            showList.setVisibility(View.VISIBLE);
+            listNumber.setText(list.size() + "");
+            inputKeyword.setText(keyword);
 
-        mRecyclerView = findViewById(R.id.recycler_view);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        adapter = new ListDisplayAdapter(this, list);
-        adapter.setMclickListener(this);
-        mRecyclerView.setAdapter(adapter);
+            mRecyclerView = findViewById(R.id.recycler_view);
+            mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+            adapter = new ListDisplayAdapter(this, list);
+            adapter.setMclickListener(this);
+            mRecyclerView.setAdapter(adapter);
+        }
+
     }
 
     private List<Item> parseResponse(String response) throws JSONException {
         JSONObject responseJSON = new JSONObject(response);
         List<Item> result = new ArrayList<>();
-        JSONArray itemList = responseJSON.getJSONArray("findItemsAdvancedResponse")
-                .getJSONObject(0).getJSONArray("searchResult").getJSONObject(0).
-                        getJSONArray("item");
-        for(int i = 0; i < itemList.length(); i++) {
-            JSONObject current = itemList.getJSONObject(i);
-            String imageUrl;
-            if(current.has("galleryURL")) {
-                imageUrl = current.getJSONArray("galleryURL").get(0).toString();
-            } else {
-                imageUrl = "";
-            }
-            String title;
-            if(current.has("title")) {
-                title = current.getJSONArray("title").get(0).toString();
-            } else {
-                title = "N/A";
-            }
-            String zipCode;
-            if(current.has("postalCode")) {
-                zipCode = current.getJSONArray("postalCode").get(0).toString();
-            } else {
-                zipCode = "N/A";
-            }
-            String cost;
-            cost = current.getJSONArray("sellingStatus").getJSONObject(0).getJSONArray("currentPrice")
-                    .getJSONObject(0).getString("__value__");
-            String shippingCost;
-            shippingCost = current.getJSONArray("shippingInfo").getJSONObject(0).
-                    getJSONArray("shippingServiceCost").getJSONObject(0).getString("__value__");
-            String condition;
-            if(current.has("condition")) {
-                if(current.getJSONArray("condition").getJSONObject(0).has("conditionDisplayName")) {
-                    condition = current.getJSONArray("condition").getJSONObject(0).getJSONArray("conditionDisplayName").get(0).toString();
-                } else {
-                    condition = "N/A";
+        JSONObject js = responseJSON.getJSONArray("findItemsAdvancedResponse")
+                .getJSONObject(0);
+        if(js.has("searchResult")) {
+            JSONObject res = js.getJSONArray("searchResult").getJSONObject(0);
+            if(res.has("item")) {
+                JSONArray itemList = res.getJSONArray("item");
+                for(int i = 0; i < itemList.length(); i++) {
+                    JSONObject current = itemList.getJSONObject(i);
+                    String imageUrl;
+                    if(current.has("galleryURL")) {
+                        imageUrl = current.getJSONArray("galleryURL").get(0).toString();
+                    } else {
+                        imageUrl = "";
+                    }
+                    String title;
+                    if(current.has("title")) {
+                        title = current.getJSONArray("title").get(0).toString();
+                    } else {
+                        title = "N/A";
+                    }
+                    String zipCode;
+                    if(current.has("postalCode")) {
+                        zipCode = current.getJSONArray("postalCode").get(0).toString();
+                    } else {
+                        zipCode = "N/A";
+                    }
+                    String cost;
+                    cost = current.getJSONArray("sellingStatus").getJSONObject(0).getJSONArray("currentPrice")
+                            .getJSONObject(0).getString("__value__");
+                    String shippingCost;
+                    shippingCost = current.getJSONArray("shippingInfo").getJSONObject(0).
+                            getJSONArray("shippingServiceCost").getJSONObject(0).getString("__value__");
+                    String condition;
+                    if(current.has("condition")) {
+                        if(current.getJSONArray("condition").getJSONObject(0).has("conditionDisplayName")) {
+                            condition = current.getJSONArray("condition").getJSONObject(0).getJSONArray("conditionDisplayName").get(0).toString();
+                        } else {
+                            condition = "N/A";
+                        }
+                    } else {
+                        condition = "N/A";
+                    }
+                    String id;
+                    id = current.getJSONArray("itemId").get(0).toString();
+                    String see;
+                    if(current.has("viewItemURL")) {
+                        see = current.getJSONArray("viewItemURL").get(0).toString();
+                    } else {
+                        see = "N/A";
+                    }
+                    Item item = new Item(imageUrl, title, zipCode, shippingCost, condition, cost, id, see);
+                    result.add(item);
                 }
-            } else {
-                condition = "N/A";
             }
-            String id;
-            id = current.getJSONArray("itemId").get(0).toString();
-            String see;
-            if(current.has("viewItemURL")) {
-                see = current.getJSONArray("viewItemURL").get(0).toString();
-            } else {
-                see = "N/A";
-            }
-            Item item = new Item(imageUrl, title, zipCode, shippingCost, condition, cost, id, see);
-            result.add(item);
         }
         return result;
     }
