@@ -89,8 +89,8 @@ public class ListDisplayAdapter extends RecyclerView.Adapter<ListDisplayAdapter.
             holder.wish_list.setImageResource(R.drawable.cart_plus);
             holder.wish_list.setColorFilter(ContextCompat.getColor(mContext, R.color.cart_color), android.graphics.PorterDuff.Mode.SRC_IN);
         }
-        Animation ani = new AlphaAnimation(1, 0);
-        ani.setDuration(200);
+        Animation ani = new AlphaAnimation(1f, 0.5f);
+        ani.setDuration(100);
         ani.setInterpolator(new LinearInterpolator());
 
         holder.wish_list.setOnClickListener(new View.OnClickListener(){
